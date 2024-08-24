@@ -1,0 +1,49 @@
+ 
+version: '3'
+
+services:
+  ssh_vpn_server:
+    image: sdr-li-vpn-server:latest
+    container_name: example-ssh-vpn-server
+    restart: always
+    environment:
+      - ROOTPASS=4t9u5uw0eio9iw3498u09erue8wu
+      - ENABLE_FIREWALL=False
+      - STATIC_ROUTES=False
+    volumes:
+      - ./ssh-vpn-server-files:/appdata
+      - ./ssh-vpn-server-files/config/ssh/sshd_config:/etc/ssh/sshd_config
+      - ./ssh-vpn-server-files/config/nftables.nft:/etc/nftables.nft
+      - ./ssh-vpn-server-files/config/route:/etc/route.conf
+      - ./ssh-vpn-server-files/config/interfaces:/etc/network/interfaces
+    networks:
+      net0:
+        ipv4_address: 10.123.2.2
+    cap_add:
+      - NET_ADMIN
+  # ssh_vpn_client:
+  #   image: sdr-li-vpn-client:latest
+  #   container_name: example-ssh-vpn-client
+  #   restart: always
+  #   environment:
+  #     - ROOTPASS=4t9u5uw0eio9iw3498u09erue8wu
+  #     - ENABLE_FIREWALL=False
+  #     - STATIC_ROUTES=False
+  #   volumes:
+  #     - ./ssh-vpn-client-files:/appdata
+  #     - ./ssh-vpn-client-files/config/ssh/sshd_config:/etc/ssh/sshd_config
+  #     - ./ssh-vpn-client-files/config/nftables.nft:/etc/nftables.nft
+  #     - ./ssh-vpn-client-files/config/route:/etc/route.conf
+  #     - ./ssh-vpn-client-files/config/interfaces:/etc/network/interfaces
+  #   networks:
+  #     net0:
+  #       ipv4_address: 10.123.2.4
+  #   cap_add:
+  #     - NET_ADMIN
+networks:
+  net0:
+    enable_ipv6: false
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.123.2.0/28

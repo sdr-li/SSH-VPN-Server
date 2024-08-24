@@ -1,0 +1,22 @@
+Include /etc/ssh/sshd_config.d/*.conf
+
+PermitRootLogin yes
+Port 22
+AuthorizedKeysFile      .ssh/authorized_keys
+
+AllowTcpForwarding yes
+GatewayPorts yes
+X11Forwarding yes
+
+Subsystem       sftp    internal-sftp
+PermitTunnel yes
+LogLevel VERBOSE
+PasswordAuthentication no
+
+ClientAliveInterval 60
+ClientAliveCountMax 3
+
+Match Group vpn-users
+	ForceCommand /bin/false
+
+
